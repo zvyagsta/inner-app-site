@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INNER — Дневник состояний для практикующих</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #FDFDFB;
+      --surface: #F3F3F1;
+      --surface-mid: #EEEEEC;
+      --surface-high: #E8E8E6;
+      --surface-highest: #E2E2E0;
+      --text-primary: #1a1c1c;
+      --text-secondary: #46464b;
+      --text-tertiary: #77767b;
+      --border: #c7c6cb;
+      --accent: #121315;
+      --warm: #2D2926;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── TYPE ─── */
+    .label-caps {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+    .display {
+      font-size: clamp(34px, 5.2vw, 66px);
+      font-weight: 700;
+      line-height: 1.06;
+      letter-spacing: -0.03em;
+    }
+    .headline {
+      font-size: clamp(22px, 3.2vw, 38px);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+    .serif { font-family: 'Cormorant Garamond', Georgia, serif; }
+
+    /* ─── LAYOUT ─── */
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+    .container-narrow { max-width: 720px; margin: 0 auto; padding: 0 28px; }
+    section { padding: 96px 0; }
+    section.alt { background: var(--surface); }
+
+    /* ─── BUTTONS ─── */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: #fff;
+      font-family: 'Manrope', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.82; }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      color: var(--text-primary);
+      font-family: 'Manrope', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 14px 0;
+      border: none;
+      border-bottom: 1px solid var(--text-primary);
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(253,253,251,0.93);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 28px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+    .nav-wordmark {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .nav-link {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      border-bottom: 1px solid var(--text-primary);
+      padding-bottom: 1px;
+      transition: opacity 0.2s;
+    }
+    .nav-link:hover { opacity: 0.6; }
+
+    /* ─── NO-AI BANNER ─── */
+    .no-ai-banner {
+      background: var(--surface-mid);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 28px;
+      text-align: center;
+    }
+    .no-ai-text {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: 0.01em;
+    }
+    .no-ai-text strong {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: calc(100vh - 100px);
+      display: flex;
+      align-items: center;
+      padding: 80px 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .hero-visual {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    /* ─── CHECKIN CARD ─── */
+    .checkin-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px 28px 24px;
+    }
+    .context-tabs {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .context-tab {
+      flex: 1;
+      padding: 9px 4px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      text-align: center;
+      background: transparent;
+      border: none;
+      border-right: 1px solid var(--border);
+      cursor: pointer;
+      color: var(--text-tertiary);
+      transition: all 0.15s;
+    }
+    .context-tab:last-child { border-right: none; }
+    .context-tab.active { background: var(--accent); color: white; }
+    .slider-group { margin-bottom: 22px; }
+    .slider-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+    .slider-name { font-size: 13px; font-weight: 500; }
+    .slider-val { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; min-width: 28px; text-align: right; }
+    input[type="range"] {
+      width: 100%;
+      -webkit-appearance: none;
+      height: 3px;
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px; height: 18px;
+      background: var(--accent);
+      border-radius: 50%;
+      margin-top: -7.5px;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+    input[type="range"]::-webkit-slider-runnable-track { height: 3px; border-radius: 2px; }
+    .slider-hint { font-size: 11px; color: var(--text-tertiary); margin-top: 5px; }
+    .save-note { font-size: 12px; color: var(--text-tertiary); margin-top: 12px; text-align: center; line-height: 1.5; }
+
+    /* ─── QUOTE SECTION ─── */
+    .quote-section {
+      position: relative;
+      background: var(--accent);
+      padding: 120px 28px;
+      overflow: hidden;
+    }
+    .quote-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.04) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .quote-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 760px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .quote-text {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: clamp(21px, 2.6vw, 30px);
+      line-height: 1.65;
+      color: rgba(255, 255, 255, 0.88);
+      margin-bottom: 32px;
+      letter-spacing: 0.01em;
+    }
+    .quote-attr {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.40);
+    }
+    .quote-mark {
+      font-size: 96px;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      color: rgba(255, 255, 255, 0.08);
+      line-height: 0.8;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    /* ─── NO-AI SECTION ─── */
+    .no-ai-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .no-ai-text-col {
+      padding: 56px 48px;
+      background: var(--accent);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .no-ai-photo-col {
+      position: relative;
+      min-height: 360px;
+      background: var(--surface-mid);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ─── PHOTO STRIP ─── */
+    .photo-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 48px;
+    }
+    .photo-tile {
+      position: relative;
+      aspect-ratio: 4/3;
+      background-color: var(--surface-highest);
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+    }
+    .photo-tile::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(18,19,21,0.5) 0%, transparent 50%);
+    }
+    .photo-tile-label {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      z-index: 2;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+    }
+
+    /* ─── VALUE GRID ─── */
+    .value-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 48px;
+    }
+    .value-cell { padding: 40px 32px; }
+    .value-cell:nth-child(1) { background: var(--bg); }
+    .value-cell:nth-child(2) { background: var(--surface); }
+    .value-cell:nth-child(3) { background: var(--surface); }
+    .value-cell:nth-child(4) { background: var(--surface-mid); }
+    .value-num { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: var(--text-tertiary); margin-bottom: 14px; }
+    .value-title { font-size: 19px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; margin-bottom: 10px; }
+    .value-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* ─── TRIGGERS ─── */
+    .trigger-list { border-top: 1px solid var(--border); }
+    .trigger-item { display: flex; gap: 20px; align-items: flex-start; padding: 22px 0; border-bottom: 1px solid var(--border); }
+    .trigger-dash { flex-shrink: 0; width: 18px; height: 2px; background: var(--text-tertiary); margin-top: 13px; }
+    .trigger-text { font-size: 18px; line-height: 1.5; }
+
+    /* ─── BIG JOBS ─── */
+    .big-jobs { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+    .big-job-dark { padding: 56px 40px; background: var(--accent); color: white; }
+    .big-job-light { padding: 56px 40px; background: var(--surface-mid); }
+    .big-job-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px; }
+    .big-job-title { font-size: clamp(20px, 2.5vw, 30px); font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 14px; }
+
+    /* ─── HOW STEPS ─── */
+    .how-steps { border-top: 1px solid var(--border); }
+    .how-step { display: grid; grid-template-columns: 44px 1fr; gap: 24px; padding: 32px 0; border-bottom: 1px solid var(--border); }
+    .how-step:last-child { border-bottom: none; }
+    .step-num { font-size: 11px; font-weight: 600; letter-spacing: 0.05em; color: var(--text-tertiary); padding-top: 3px; }
+    .step-title { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 8px; }
+    .step-desc { font-size: 15px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* ─── TREND CHART ─── */
+    .chart-wrap { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 32px; }
+    .chart-legend { display: flex; gap: 24px; margin-bottom: 24px; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+    .chart-obs { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border); }
+
+    /* ─── POINT B ─── */
+    .point-b-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .emotion-list { display: flex; flex-direction: column; }
+    .emotion-item { font-size: 20px; font-weight: 500; line-height: 1.3; letter-spacing: -0.01em; padding: 18px 0; border-bottom: 1px solid var(--border); }
+    .emotion-item:last-child { border-bottom: none; }
+    .data-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 40px; }
+    .data-row { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .data-row:last-of-type { border-bottom: none; }
+    .dots { font-size: 11px; color: var(--text-tertiary); letter-spacing: 0.12em; flex: 1; margin: 0 12px; overflow: hidden; }
+    .data-delta { font-size: 18px; font-weight: 700; }
+
+    /* ─── BARRIERS ─── */
+    .barrier-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-top: 48px; }
+    .barrier-cell { padding: 32px 24px; }
+    .barrier-cell:nth-child(1) { background: var(--bg); }
+    .barrier-cell:nth-child(2) { background: var(--surface); }
+    .barrier-cell:nth-child(3) { background: var(--surface-mid); }
+    .barrier-q { font-size: 16px; font-weight: 600; line-height: 1.3; margin-bottom: 14px; }
+    .barrier-a { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* ─── COMPETITORS ─── */
+    .comp-table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+    .comp-table th { text-align: left; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); padding: 14px 20px; background: var(--surface); border-bottom: 1px solid var(--border); }
+    .comp-table td { padding: 18px 20px; border-bottom: 1px solid var(--border); font-size: 14px; line-height: 1.5; vertical-align: top; }
+    .comp-table tr:last-child td { border-bottom: none; }
+    .comp-name { font-weight: 600; color: var(--text-secondary); }
+    .comp-limit { color: var(--text-tertiary); }
+    .comp-inner { color: var(--text-primary); font-weight: 500; }
+
+    /* ─── FINAL CTA ─── */
+    .final-cta { background: var(--accent); color: white; text-align: center; padding: 120px 28px; }
+    .final-cta .display { color: white; max-width: 680px; margin: 0 auto 24px; }
+    .final-cta .sub { font-size: 18px; color: rgba(255,255,255,0.6); max-width: 420px; margin: 0 auto 44px; line-height: 1.6; }
+    .btn-inv { display: inline-flex; align-items: center; gap: 8px; background: white; color: var(--accent); font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; padding: 14px 28px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; }
+    .btn-inv:hover { opacity: 0.9; }
+
+    /* ─── FOOTER ─── */
+    footer { background: var(--bg); border-top: 1px solid var(--border); padding: 36px 28px; }
+    .footer-inner { max-width: 1080px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .footer-note { font-size: 13px; color: var(--text-tertiary); }
+
+    /* ─── ANIMATIONS ─── */
+    .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    .fade-up.d1 { transition-delay: 0.1s; }
+    .fade-up.d2 { transition-delay: 0.2s; }
+    .fade-up.d3 { transition-delay: 0.3s; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 800px) {
+      section { padding: 64px 0; }
+      .hero-grid, .no-ai-section, .big-jobs, .point-b-grid { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .value-grid, .barrier-grid { grid-template-columns: 1fr; }
+      .photo-strip { grid-template-columns: 1fr; }
+      .photo-tile { aspect-ratio: 16/9; }
+      .no-ai-text-col { padding: 40px 28px; }
+      .no-ai-photo-col { min-height: 260px; }
+      .big-job-dark, .big-job-light { padding: 40px 28px; }
+      .quote-section { padding: 80px 28px; }
+    }
+    @media (max-width: 560px) {
+      .comp-table th, .comp-table td { padding: 12px 14px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NO-AI BANNER ─── -->
+<div class="no-ai-banner">
+  <p class="no-ai-text"><strong>Без искусственного интеллекта.</strong> Только ты и три замера в день — больше ничего.</p>
+</div>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <svg width="30" height="30" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="46" stroke="#1a1c1c" stroke-width="2.5"/>
+        <circle cx="50" cy="50" r="33" stroke="#1a1c1c" stroke-width="2.5"/>
+        <circle cx="50" cy="50" r="20" stroke="#1a1c1c" stroke-width="2.5"/>
+        <circle cx="50" cy="50" r="8" stroke="#1a1c1c" stroke-width="2.5"/>
+        <circle cx="50" cy="50" r="2.5" fill="#1a1c1c"/>
+      </svg>
+      <span class="nav-wordmark">INNER</span>
+    </a>
+    <a href="https://forms.gle/sst4N81HQYURsf6HA" target="_blank" class="nav-link">Узнать о запуске →</a>
+  </div>
+</nav>
+
+<!-- ─── ① HERO ─── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <span class="label-caps">Дневник состояний для практикующих</span>
+        <h1 class="display" style="margin-bottom: 20px">
+          После медитации<br>рождается нечто важное.<br>Не давай этому исчезнуть.
+        </h1>
+        <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.65; max-width: 460px;">
+          INNER фиксирует твоё состояние за 30 секунд — и через неделю показывает, как практика меняет твой обычный день.
+        </p>
+        <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;margin-top:36px">
+          <a href="#try" class="btn-primary">
+            Записать состояние сейчас
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#how" class="btn-ghost">Как это работает</a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <svg style="position:absolute;opacity:.07;pointer-events:none" width="420" height="420" viewBox="0 0 420 420" fill="none">
+          <circle cx="210" cy="210" r="200" stroke="#1a1c1c" stroke-width="1.5"/>
+          <circle cx="210" cy="210" r="158" stroke="#1a1c1c" stroke-width="1.5"/>
+          <circle cx="210" cy="210" r="116" stroke="#1a1c1c" stroke-width="1.5"/>
+          <circle cx="210" cy="210" r="74" stroke="#1a1c1c" stroke-width="1.5"/>
+          <circle cx="210" cy="210" r="32" stroke="#1a1c1c" stroke-width="1.5"/>
+          <circle cx="210" cy="210" r="10" fill="#1a1c1c"/>
+        </svg>
+        <div style="position:relative;z-index:2;width:280px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:24px;box-shadow:0 12px 40px rgba(0,0,0,0.07)">
+          <div style="font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:18px">После практики</div>
+          <div style="margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:13px;font-weight:500">Ясность ума</span><span style="font-size:16px;font-weight:700">8</span></div>
+            <div style="height:3px;background:var(--surface-highest);border-radius:2px"><div style="height:100%;width:80%;background:var(--accent);border-radius:2px"></div></div>
+          </div>
+          <div style="margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:13px;font-weight:500">Тепло к себе</span><span style="font-size:16px;font-weight:700">7</span></div>
+            <div style="height:3px;background:var(--surface-highest);border-radius:2px"><div style="height:100%;width:70%;background:var(--accent);border-radius:2px"></div></div>
+          </div>
+          <div style="margin-bottom:20px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:13px;font-weight:500">Реактивность</span><span style="font-size:16px;font-weight:700">6</span></div>
+            <div style="height:3px;background:var(--surface-highest);border-radius:2px"><div style="height:100%;width:60%;background:var(--accent);border-radius:2px"></div></div>
+          </div>
+          <div style="background:var(--accent);color:white;text-align:center;padding:10px;border-radius:4px;font-size:13px;font-weight:600">Записать</div>
+          <p style="font-size:11px;color:var(--text-tertiary);text-align:center;margin-top:10px;line-height:1.4">Пропуски — это нормально.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ② CORE JOB + MICRO JOBS ─── -->
+<section class="alt" id="how">
+  <div class="container-narrow">
+    <span class="label-caps">Что делает INNER</span>
+    <h2 class="headline fade-up" style="margin-bottom: 48px; max-width: 480px">
+      Три параметра. Тридцать секунд. Ясность — через неделю.
+    </h2>
+    <div class="how-steps fade-up">
+      <div class="how-step">
+        <span class="step-num">01</span>
+        <div>
+          <div class="step-title">Записать состояние за 30 секунд</div>
+          <p class="step-desc">Три слайдера: Ясность ума, Тепло к себе и людям, Реактивность. Никакого пустого листа — только цифры, только сейчас, пока ощущение живое.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <span class="step-num">02</span>
+        <div>
+          <div class="step-title">Видеть, как практика влияет на день</div>
+          <p class="step-desc">Три момента: утро, после практики, вечер. Вместе они показывают: удерживается ли эффект или рассыпается к обеду.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <span class="step-num">03</span>
+        <div>
+          <div class="step-title">Возвращаться и читать динамику, а не архив</div>
+          <p class="step-desc">После 7 дней — журнал с тремя линиями тренда и наблюдениями. Не просто записи, а живой срез твоего развития.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ③ TRY IT (Aha-момент: первая Micro Job) ─── -->
+<section id="try">
+  <div class="container-narrow">
+    <span class="label-caps">Попробуй сейчас</span>
+    <h2 class="headline fade-up" style="margin-bottom:10px">Запиши своё состояние</h2>
+    <p style="font-size:16px;color:var(--text-secondary);margin-bottom:36px" class="fade-up d1">Прямо сейчас — без регистрации. Три движения.</p>
+
+    <div class="checkin-card fade-up d2" id="checkinCard">
+      <div class="context-tabs">
+        <button class="context-tab" onclick="setTab(this)">Утро</button>
+        <button class="context-tab active" onclick="setTab(this)">После практики</button>
+        <button class="context-tab" onclick="setTab(this)">Вечер</button>
+      </div>
+      <div class="slider-group">
+        <div class="slider-row"><span class="slider-name">Ясность ума</span><span class="slider-val" id="v1">7</span></div>
+        <input type="range" min="0" max="10" value="7" oninput="document.getElementById('v1').textContent=this.value;updateSlider(this)">
+        <p class="slider-hint">Насколько голова ясная, без тумана и вялости</p>
+      </div>
+      <div class="slider-group">
+        <div class="slider-row"><span class="slider-name">Тепло к себе и людям</span><span class="slider-val" id="v2">5</span></div>
+        <input type="range" min="0" max="10" value="5" oninput="document.getElementById('v2').textContent=this.value;updateSlider(this)">
+        <p class="slider-hint">Есть ли ощущение мягкости и открытости</p>
+      </div>
+      <div class="slider-group" style="margin-bottom:28px">
+        <div class="slider-row"><span class="slider-name">Реактивность</span><span class="slider-val" id="v3">6</span></div>
+        <input type="range" min="0" max="10" value="6" oninput="document.getElementById('v3').textContent=this.value;updateSlider(this)">
+        <p class="slider-hint">Насколько легко вывести тебя из равновесия</p>
+      </div>
+      <button class="btn-primary" style="width:100%;justify-content:center" onclick="saveCheckin()">Записать состояние</button>
+      <p class="save-note">Пропуски — это нормально. Важна не идеальность, а твоё внимание.</p>
+    </div>
+
+    <div id="savedMsg" style="display:none;text-align:center;padding:40px 32px;border:1px solid var(--border);border-radius:8px">
+      <div class="label-caps" style="margin-bottom:14px">Состояние зафиксировано</div>
+      <div style="font-size:26px;font-weight:700;letter-spacing:-0.02em;margin-bottom:10px">Вот так работает INNER</div>
+      <p style="font-size:15px;color:var(--text-secondary);max-width:360px;margin:0 auto 24px">Через 7 дней регулярных записей ты увидишь свою динамику.</p>
+      <a href="https://forms.gle/sst4N81HQYURsf6HA" target="_blank" class="btn-primary">Узнать о запуске</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ④ AHA: АНАЛИТИКА ─── -->
+<section class="alt">
+  <div class="container-narrow">
+    <span class="label-caps">Через 7 дней</span>
+    <h2 class="headline fade-up" style="margin-bottom:10px">Ты увидишь паттерн</h2>
+    <p style="font-size:16px;color:var(--text-secondary);margin-bottom:36px;max-width:440px" class="fade-up d1">Журнал с тремя линиями тренда и наблюдениями. Что реально работает в твоей практике — а что остаётся на поверхности.</p>
+
+    <div class="chart-wrap fade-up d2">
+      <div class="chart-legend">
+        <div class="legend-item"><span class="legend-dot" style="background:#1a1c1c"></span> Ясность</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#46464b"></span> Тепло</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#c7c6cb"></span> Реактивность</div>
+      </div>
+      <svg width="100%" height="180" viewBox="0 0 640 180" preserveAspectRatio="none" style="display:block">
+        <line x1="0" y1="45" x2="640" y2="45" stroke="#e2e2e2" stroke-width="1"/>
+        <line x1="0" y1="90" x2="640" y2="90" stroke="#e2e2e2" stroke-width="1"/>
+        <line x1="0" y1="135" x2="640" y2="135" stroke="#e2e2e2" stroke-width="1"/>
+        <polyline points="0,145 90,120 180,95 270,70 360,80 450,52 540,34 640,24" fill="none" stroke="#1a1c1c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="0,160 90,148 180,128 270,112 360,102 450,88 540,74 640,62" fill="none" stroke="#46464b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="0,172 90,165 180,158 270,145 360,135 450,122 540,108 640,94" fill="none" stroke="#c7c6cb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="0" y="176" font-family="Manrope" font-size="11" fill="#77767b">Пн</text>
+        <text x="82" y="176" font-family="Manrope" font-size="11" fill="#77767b">Вт</text>
+        <text x="172" y="176" font-family="Manrope" font-size="11" fill="#77767b">Ср</text>
+        <text x="262" y="176" font-family="Manrope" font-size="11" fill="#77767b">Чт</text>
+        <text x="352" y="176" font-family="Manrope" font-size="11" fill="#77767b">Пт</text>
+        <text x="442" y="176" font-family="Manrope" font-size="11" fill="#77767b">Сб</text>
+        <text x="532" y="176" font-family="Manrope" font-size="11" fill="#77767b">Вс</text>
+      </svg>
+      <div class="chart-obs">
+        <div class="label-caps" style="margin-bottom:10px">Наблюдение</div>
+        <p style="font-size:15px;line-height:1.6">Ясность после практики стабильно растёт. Но устойчивость к триггерам пока не удерживается к вечеру — возможно, стоит добавить вечерний замер.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ⑤ VALUE PROPS ─── -->
+<section>
+  <div class="container">
+    <span class="label-caps">Ценность</span>
+    <h2 class="headline fade-up" style="max-width:480px">Четыре вещи, важные тем, кто практикует серьёзно</h2>
+    <div class="value-grid fade-up d1">
+      <div class="value-cell">
+        <div class="value-num">01</div>
+        <div class="value-title">Фиксируй сразу — пока ощущение живое</div>
+        <p class="value-desc">Слайдеры вместо пустого листа. Три движения — и готово. Не нужно придумывать, что писать.</p>
+      </div>
+      <div class="value-cell">
+        <div class="value-num">02</div>
+        <div class="value-title">Возвращайся и читай динамику, а не архив</div>
+        <p class="value-desc">Журнал — это не записи, а график. Видишь траекторию за неделю и месяц, а не отдельные дни.</p>
+      </div>
+      <div class="value-cell">
+        <div class="value-num">03</div>
+        <div class="value-title">Понимай, как практика влияет на жизнь</div>
+        <p class="value-desc">Мы не измеряем «качество медитации». Мы смотрим: стал ли день яснее, теплее, спокойнее.</p>
+      </div>
+      <div class="value-cell">
+        <div class="value-num">04</div>
+        <div class="value-title">Без стыда, без счётчиков, без давления</div>
+        <p class="value-desc">Пропустил три дня — окей. Нет напоминаний с emoji, нет обнуления «серии дней». Только твои данные.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ЦИТАТА (Kabat-Zinn) + ФОТО ─── -->
+<section class="quote-section">
+  <svg style="position:absolute;right:-80px;top:50%;transform:translateY(-50%);opacity:0.055;pointer-events:none" width="560" height="560" viewBox="0 0 560 560" fill="none" aria-hidden="true">
+    <circle cx="280" cy="280" r="260" stroke="white" stroke-width="1.5"/>
+    <circle cx="280" cy="280" r="205" stroke="white" stroke-width="1.5"/>
+    <circle cx="280" cy="280" r="150" stroke="white" stroke-width="1.5"/>
+    <circle cx="280" cy="280" r="95" stroke="white" stroke-width="1.5"/>
+    <circle cx="280" cy="280" r="40" stroke="white" stroke-width="1.5"/>
+    <circle cx="280" cy="280" r="9" fill="white"/>
+  </svg>
+  <div class="quote-inner">
+    <span class="quote-mark serif">"</span>
+    <blockquote class="quote-text">
+      Медитация — это единственный человеческий вид деятельности, который не направлен на самосовершенствование или на то, чтобы куда-то попасть. Она направлена на то, чтобы просто осознать, где вы уже находитесь. Парадокс в том, что когда мы действительно осознаем, где мы находимся, и принимаем это — именно тогда и начинаются глубокие изменения. Мы перестаем пытаться стать «лучшей версией себя» и начинаем доверять той целостности, которая уже есть внутри нас, даже если она скрыта за слоями стресса или боли.
+    </blockquote>
+    <p class="quote-attr">Джон Кабат-Зинн</p>
+  </div>
+</section>
+
+<!-- ─── БЕЗ ИИ ─── -->
+<section>
+  <div class="container">
+    <div class="no-ai-section fade-up">
+      <div class="no-ai-text-col">
+        <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:20px">Принцип</div>
+        <h2 style="font-size:clamp(24px,3vw,36px);font-weight:700;line-height:1.15;letter-spacing:-0.02em;color:white;margin-bottom:20px">
+          Никакого искусственного интеллекта
+        </h2>
+        <p style="font-size:16px;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:24px">
+          INNER не использует нейросети и не интерпретирует твоё состояние. Алгоритм считает числа и строит графики — не больше.
+        </p>
+        <p style="font-size:16px;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:24px">
+          Смысл из них извлекаешь ты. ИИ ≠ математика — и здесь только она.
+        </p>
+        <div style="padding: 20px 0; border-top: 1px solid rgba(255,255,255,.15);">
+          <p style="font-size:15px;color:rgba(255,255,255,.85);line-height:1.6;font-style:italic">
+            «Ты — единственный интерпретатор своих данных. INNER даёт зеркало, не ответы.»
+          </p>
+        </div>
+      </div>
+      <div class="no-ai-photo-col">
+        <svg style="opacity:0.18" width="260" height="260" viewBox="0 0 260 260" fill="none" aria-hidden="true">
+          <circle cx="130" cy="130" r="120" stroke="#1a1c1c" stroke-width="1.5"/>
+          <circle cx="130" cy="130" r="93" stroke="#1a1c1c" stroke-width="1.5"/>
+          <circle cx="130" cy="130" r="66" stroke="#1a1c1c" stroke-width="1.5"/>
+          <circle cx="130" cy="130" r="39" stroke="#1a1c1c" stroke-width="1.5"/>
+          <circle cx="130" cy="130" r="14" stroke="#1a1c1c" stroke-width="1.5"/>
+          <circle cx="130" cy="130" r="4" fill="#1a1c1c"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ⑥ УЗНАЁШЬ СЕБЯ? ─── -->
+<section class="alt">
+  <div class="container-narrow">
+    <span class="label-caps">Узнаёшь себя?</span>
+    <h2 class="headline fade-up" style="margin-bottom:48px;max-width:520px">
+      Ты хочешь развиваться через практику — а не просто практиковать
+    </h2>
+    <div class="trigger-list">
+      <div class="trigger-item fade-up">
+        <div class="trigger-dash"></div>
+        <p class="trigger-text">После медитации чувствуешь что-то важное — и через час это просто воспоминание.</p>
+      </div>
+      <div class="trigger-item fade-up d1">
+        <div class="trigger-dash"></div>
+        <p class="trigger-text">Пробовал бумажный дневник: слишком долго, слишком много слов, бросал через две недели.</p>
+      </div>
+      <div class="trigger-item fade-up d2">
+        <div class="trigger-dash"></div>
+        <p class="trigger-text">Медитируешь уже год — но нечем измерить, есть ли прогресс.</p>
+      </div>
+      <div class="trigger-item fade-up d1">
+        <div class="trigger-dash"></div>
+        <p class="trigger-text">Хочешь инструмент без эзотерики, клише и «духовных рейтингов».</p>
+      </div>
+      <div class="trigger-item fade-up d2">
+        <div class="trigger-dash"></div>
+        <p class="trigger-text">Ценишь тишину интерфейса — никаких значков достижений и дофаминовых ловушек.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ⑦ BIG JOBS ─── -->
+<section>
+  <div class="container">
+    <span class="label-caps" style="margin-bottom:40px">Большие цели</span>
+    <div class="big-jobs fade-up">
+      <div class="big-job-dark">
+        <div class="big-job-label" style="color:rgba(255,255,255,.35)">Ты хочешь</div>
+        <div class="big-job-title" style="color:white">Развиваться через медитативную практику</div>
+        <p style="font-size:15px;color:rgba(255,255,255,.6);line-height:1.65">Не просто медитировать. Понимать, как именно это меняет твоё мышление, отношения и реакции на жизнь.</p>
+      </div>
+      <div class="big-job-light">
+        <div class="big-job-label" style="color:var(--text-tertiary)">Ты хочешь</div>
+        <div class="big-job-title">Интегрировать практику в обычную жизнь</div>
+        <p style="font-size:15px;color:var(--text-secondary);line-height:1.65">Не отдельный час на коврике. А изменение качества дня — в мышлении, устойчивости, в отношении к себе.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ⑧ КАК МЫ ВЫПОЛНИМ CORE JOB ─── -->
+<section class="alt">
+  <div class="container-narrow">
+    <span class="label-caps">Как это работает</span>
+    <h2 class="headline fade-up" style="margin-bottom:48px;max-width:520px">
+      Как INNER поможет тебе зафиксировать состояние и увидеть развитие
+    </h2>
+    <div class="how-steps fade-up d1">
+      <div class="how-step">
+        <span class="step-num">01</span>
+        <div>
+          <div class="step-title">Три слайдера вместо пустого листа</div>
+          <p class="step-desc">Ясность ума, Тепло к себе и людям, Реактивность — три параметра, которые отражают интеграцию практики в жизнь. Не нужно придумывать, что писать.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <span class="step-num">02</span>
+        <div>
+          <div class="step-title">Три момента создают полную картину</div>
+          <p class="step-desc">Утренний базис + после практики + вечерний итог. Видно, удерживается ли эффект практики на протяжении дня или рассыпается к обеду.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <span class="step-num">03</span>
+        <div>
+          <div class="step-title">Журнал — это аналитика, не архив</div>
+          <p class="step-desc">График трёх линий за 7 или 30 дней. Числовые маркеры: «+1.2 к ясности за неделю». Блок Наблюдения — описание того, что видно в твоих данных.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <span class="step-num">04</span>
+        <div>
+          <div class="step-title">Экспорт для тех, кто думает системно</div>
+          <p class="step-desc">CSV — скачай всю историю замеров и анализируй сам в любом инструменте. Твои данные принадлежат тебе.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ⑨ ТОЧКА Б ─── -->
+<section>
+  <div class="container">
+    <div class="point-b-grid">
+      <div>
+        <span class="label-caps">Точка Б</span>
+        <h2 class="headline fade-up" style="margin-bottom:36px;max-width:380px">Как ты будешь себя чувствовать</h2>
+        <div class="emotion-list">
+          <div class="emotion-item fade-up">Ты знаешь о себе — не догадываешься</div>
+          <div class="emotion-item fade-up d1">Ты видишь, как практика работает именно у тебя</div>
+          <div class="emotion-item fade-up d2">Ощущение порядка там, где раньше была неопределённость</div>
+          <div class="emotion-item fade-up d1">Практика стала частью дня, а не отдельным ритуалом</div>
+        </div>
+      </div>
+      <div class="fade-up d2">
+        <div class="data-card">
+          <div class="label-caps" style="margin-bottom:28px">Через 30 дней</div>
+          <div class="data-row">
+            <span style="font-size:15px;font-weight:500">Ясность ума</span>
+            <span class="dots">.............................</span>
+            <span class="data-delta">+2.4</span>
+          </div>
+          <div class="data-row">
+            <span style="font-size:15px;font-weight:500">Тепло к себе</span>
+            <span class="dots">.............................</span>
+            <span class="data-delta">+1.8</span>
+          </div>
+          <div class="data-row">
+            <span style="font-size:15px;font-weight:500">Реактивность</span>
+            <span class="dots">.............................</span>
+            <span class="data-delta">−3.1</span>
+          </div>
+          <div style="margin-top:28px;padding-top:24px">
+            <p style="font-size:14px;color:var(--text-secondary);line-height:1.65;font-style:italic">«Устойчивость к триггерам выросла больше всего. Вижу это по записям — и чувствую в жизни.»</p>
+            <p style="font-size:12px;color:var(--text-tertiary);margin-top:8px">— Анастасия</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ⑩ БАРЬЕРЫ ─── -->
+<section class="alt">
+  <div class="container">
+    <span class="label-caps">Частые сомнения</span>
+    <h2 class="headline fade-up" style="max-width:480px">Что обычно останавливает</h2>
+    <div class="barrier-grid fade-up d1">
+      <div class="barrier-cell">
+        <p class="barrier-q">«Некогда вести дневник»</p>
+        <p class="barrier-a">30 секунд. Три слайдера. Меньше времени, чем убрать коврик.</p>
+      </div>
+      <div class="barrier-cell">
+        <p class="barrier-q">«Не знаю, что писать»</p>
+        <p class="barrier-a">Здесь не пишут. Только двигают три слайдера. Никакого пустого листа, никаких слов.</p>
+      </div>
+      <div class="barrier-cell">
+        <p class="barrier-q">«Пробовал дневник — бросил»</p>
+        <p class="barrier-a">Нет счётчика дней, нет стыда, нет напоминаний. Пропустил неделю — просто продолжаешь. Бережность встроена в систему.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ⑪ КОНКУРЕНТЫ ─── -->
+<section>
+  <div class="container-narrow">
+    <span class="label-caps">Альтернативы</span>
+    <h2 class="headline fade-up" style="margin-bottom:48px;max-width:500px">Почему это лучше того, что ты уже пробовал</h2>
+    <table class="comp-table fade-up d1">
+      <thead>
+        <tr>
+          <th style="width:28%">Инструмент</th>
+          <th style="width:36%">Что с ним не так</th>
+          <th style="width:36%">Что даёт INNER</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="comp-name">Бумажный дневник</span></td>
+          <td class="comp-limit">Нет динамики и структуры — только архив текста, который не анализируешь</td>
+          <td class="comp-inner">Три параметра и графики. Видишь тренд, а не просто записи</td>
+        </tr>
+        <tr>
+          <td><span class="comp-name">Голосовые заметки</span></td>
+          <td class="comp-limit">Быстро записал — потом не переслушиваешь. Нет сравнения периодов</td>
+          <td class="comp-inner">Числа удобнее для сравнения. Возвращаться легко</td>
+        </tr>
+        <tr>
+          <td><span class="comp-name">Headspace / Calm</span></td>
+          <td class="comp-limit">Таймер есть. Рефлексии нет. Не показывает, что изменилось после практики</td>
+          <td class="comp-inner">INNER начинается там, где заканчивается сессия медитации</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ─── ⑫ FINAL CTA ─── -->
+<section class="final-cta">
+  <div style="display:flex;justify-content:center;margin-bottom:40px">
+    <svg width="52" height="52" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="46" stroke="rgba(255,255,255,.22)" stroke-width="2.5"/>
+      <circle cx="50" cy="50" r="33" stroke="rgba(255,255,255,.42)" stroke-width="2.5"/>
+      <circle cx="50" cy="50" r="20" stroke="rgba(255,255,255,.68)" stroke-width="2.5"/>
+      <circle cx="50" cy="50" r="8" stroke="white" stroke-width="2.5"/>
+      <circle cx="50" cy="50" r="2.5" fill="white"/>
+    </svg>
+  </div>
+  <h2 class="display">Начни фиксировать.<br>Увидишь себя иначе.</h2>
+  <p class="sub">Без ИИ. Без рейтингов. Только ты и твои три числа в день.</p>
+  <a href="https://forms.gle/sst4N81HQYURsf6HA" target="_blank" class="btn-inv">
+    Быть в числе первых
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-inner">
+    <a href="#" class="nav-logo" style="text-decoration:none;color:var(--text-primary)">
+      <svg width="22" height="22" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="46" stroke="#1a1c1c" stroke-width="3"/>
+        <circle cx="50" cy="50" r="33" stroke="#1a1c1c" stroke-width="3"/>
+        <circle cx="50" cy="50" r="20" stroke="#1a1c1c" stroke-width="3"/>
+        <circle cx="50" cy="50" r="8" stroke="#1a1c1c" stroke-width="3"/>
+        <circle cx="50" cy="50" r="2.5" fill="#1a1c1c"/>
+      </svg>
+      <span style="font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase">INNER</span>
+    </a>
+    <span class="footer-note">© 2026 INNER — Система осознанного самонаблюдения</span>
+  </div>
+</footer>
+
+<script>
+  function updateSlider(el) {
+    const pct = (el.value / el.max) * 100;
+    el.style.background = `linear-gradient(to right, #1a1c1c ${pct}%, #e2e2e2 ${pct}%)`;
+  }
+  document.querySelectorAll('input[type="range"]').forEach(updateSlider);
+
+  function setTab(btn) {
+    btn.closest('.context-tabs').querySelectorAll('.context-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function saveCheckin() {
+    const card = document.getElementById('checkinCard');
+    card.style.opacity = '0.5';
+    card.style.pointerEvents = 'none';
+    setTimeout(() => {
+      card.style.display = 'none';
+      document.getElementById('savedMsg').style.display = 'block';
+    }, 700);
+  }
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
